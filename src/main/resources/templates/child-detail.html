@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head('Child record')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<div th:replace="~{fragments :: alerts}"></div>
+<main class="container py-3">
+<div class="d-flex flex-wrap justify-content-between align-items-start mb-3 gap-2">
+  <div><div class="small text-uppercase text-muted fw-semibold">Official immunization record &middot; No. <span th:text="'JIB-' + ${#numbers.formatInteger(child.id,6,'NONE')}"></span></div><h4 class="mb-0" th:text="${child.fullName}"></h4>
+    <div class="text-muted" th:text="${child.sex} + ' | Born ' + ${child.birthText} + ' | ' + ${child.ageText} + ' old'"></div>
+    <div class="small">Mother: <b th:text="${child.motherName}"></b> | Father: <span th:text="${child.fatherName} ?: '-'"></span> | Purok: <span th:text="${child.purok} ?: '-'"></span></div></div>
+  <div class="no-print d-flex gap-2 flex-wrap">
+    <a class="btn btn-outline-secondary btn-sm" th:href="@{/child/{id}/card(id=${child.id})}">Immunization card</a>
+    <th:block sec:authorize="hasAnyRole('MIDWIFE','BHW')"><button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#measure"><i class="bi bi-rulers"></i> Height &amp; weight</button></th:block>
+    <th:block sec:authorize="hasRole('PARENT')">
+      <a class="btn btn-outline-primary btn-sm" th:href="@{/parent/children/{id}/edit(id=${child.id})}">Edit</a>
+      <form th:action="@{/parent/children/{id}/delete(id=${child.id})}" method="post" onsubmit="return confirm('Delete this child and all records?')"><button class="btn btn-outline-danger btn-sm">Delete</button></form></th:block>
+    <th:block sec:authorize="hasRole('BHW')">
+      <form th:action="@{/bhw/children/{id}/delete(id=${child.id})}" method="post" onsubmit="return confirm('Delete this child and all records?')"><button class="btn btn-outline-danger btn-sm">Delete</button></form></th:block>
+  </div></div>
+<div class="modal fade" id="measure" tabindex="-1" sec:authorize="hasAnyRole('MIDWIFE','BHW')"><div class="modal-dialog modal-dialog-centered"><form class="modal-content" method="post" th:action="@{/child/{id}/measure(id=${child.id})}">
+  <div class="modal-header border-0"><h5 class="modal-title">Record height &amp; weight</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body row g-3"><div class="col-6"><label class="form-label">Height (cm)</label><input type="number" step="0.1" min="1" name="height" class="form-control" th:value="${child.height}" required></div>
+    <div class="col-6"><label class="form-label">Weight (kg)</label><input type="number" step="0.1" min="0.1" name="weight" class="form-control" th:value="${child.weight}" required></div>
+    <div class="col-12 small text-muted">BMI is calculated automatically after saving.</div></div>
+  <div class="modal-footer border-0"><button class="btn btn-success w-100">Save</button></div></form></div></div>
+<div class="small mb-2">Height: <b th:text="(${child.height} ?: '-') + ' cm'"></b> | Weight: <b th:text="(${child.weight} ?: '-') + ' kg'"></b> | BMI: <b th:text="${child.bmi} ?: '-'"></b></div>
+<div class="progress mb-3" style="height:12px"><div class="progress-bar bg-success" th:style="'width:' + ${child.percent} + '%'" th:text="${child.percent} + '%'"></div></div>
+<div class="card"><div class="table-responsive"><table class="table align-middle mb-0 data-table" data-filter-col="2" data-filter-label="All statuses">
+  <thead><tr><th>Vaccine</th><th>Scheduled</th><th>Status</th><th>Given</th><th>Temp / Wt / Ht</th><th>Remarks</th><th></th></tr></thead>
+  <tbody><tr th:each="s : ${child.schedules}">
+    <td th:text="${s.label}"></td><td th:text="${s.dateText}"></td><td><span th:replace="~{fragments :: badge(${s})}"></span></td>
+    <td th:text="${s.status.name()=='VACCINATED'} ? ${s.givenText} : ''"></td>
+    <td th:text="${s.status.name()=='VACCINATED'} ? ((${s.temperature} ?: '-') + ' / ' + (${s.weight} ?: '-') + ' / ' + (${s.height} ?: '-')) : ''"></td>
+    <td class="small" th:text="${s.remarks}"></td>
+    <td class="text-end">
+      <th:block sec:authorize="hasRole('PARENT')"><a class="btn btn-sm btn-outline-primary" th:if="${s.status.name()=='SCHEDULED' or s.status.name()=='ABSENT'}" th:href="@{/parent/reschedule/{id}(id=${s.id})}">Request reschedule</a></th:block>
+      <th:block sec:authorize="hasRole('MIDWIFE')"><div th:replace="~{fragments :: actions(${s})}"></div></th:block></td>
+  </tr></tbody></table></div></div>
+<div class="d-none d-print-block mt-5 small">Verified by (Midwife / BHW): ______________________ &nbsp; Date: ______________</div>
+</main>
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body></html>

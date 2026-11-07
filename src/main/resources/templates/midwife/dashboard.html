@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head('Midwife')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<div th:replace="~{fragments :: alerts}"></div>
+<main class="container py-4">
+<div class="mb-3"><h4 class="mb-0">Midwife Dashboard</h4></div>
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3"><div th:replace="~{fragments :: stat('bi-calendar-day','bg-primary-subtle text-primary',${todayList.size()},'To vaccinate today',${asOf})}"></div></div>
+  <div class="col-6 col-lg-3"><div th:replace="~{fragments :: stat('bi-check2-circle','bg-success-subtle text-success',${vaccinatedToday},'Vaccinated today',${asOf})}"></div></div>
+  <div class="col-6 col-lg-3"><div th:replace="~{fragments :: stat('bi-hourglass-split','bg-warning-subtle text-warning',${overdue},'Overdue',${asOf})}"></div></div>
+  <div class="col-6 col-lg-3"><div th:replace="~{fragments :: stat('bi-inbox','bg-danger-subtle text-danger',${pending},'Pending requests',${asOf})}"></div></div>
+</div>
+<div class="card"><div class="card-header d-flex justify-content-between align-items-center"><span>Today's vaccination list</span><a class="btn btn-sm btn-success" th:href="@{/midwife/schedules/new}"><i class="bi bi-plus-lg"></i> Schedule a visit</a></div>
+<div class="table-responsive"><table class="table align-middle mb-0 data-table" data-filter-col="2" data-filter-label="All vaccines"><thead><tr><th>Child</th><th>Mother</th><th>Vaccine</th><th>Status</th><th></th></tr></thead>
+  <tbody><tr th:each="s : ${todayList}"><td><a th:href="@{/child/{id}(id=${s.child.id})}" th:text="${s.child.fullName}"></a></td><td th:text="${s.child.motherName}"></td><td th:text="${s.label}"></td>
+    <td><span th:replace="~{fragments :: badge(${s})}"></span></td><td class="text-end"><div th:replace="~{fragments :: actions(${s})}"></div></td></tr>
+  <tr th:if="${todayList.isEmpty()}"><td colspan="5" class="text-center text-muted py-4">Nobody is scheduled for today.</td></tr></tbody></table></div></div>
+<div class="text-muted small mt-2" th:text="'Next 7 days: ' + ${next7} + ' scheduled visit(s)'"></div>
+</main>
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body></html>

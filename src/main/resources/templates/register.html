@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Sign up')}"></head>
+<body>
+<div class="auth-wrap">
+<div class="auth-art">
+  <span class="bubble" style="width:220px;height:220px;top:-60px;left:-60px"></span><span class="bubble" style="width:140px;height:140px;bottom:60px;right:40px;animation-delay:2s"></span><span class="bubble" style="width:70px;height:70px;top:40%;right:25%;animation-delay:4s"></span>
+  <div class="fade-up position-relative">
+    <div class="brand-badge mb-3" style="width:56px;height:56px;font-size:1.7rem;background:rgba(255,255,255,.2)"><i class="bi bi-shield-plus"></i></div>
+    <h1>Barangay Jibolo</h1><p class="fs-5 mb-0">Child Immunization Scheduling<br>and Monitoring System</p>
+    <svg class="art-svg float" viewBox="0 0 400 290" xmlns="http://www.w3.org/2000/svg"><path d="M170 30 L255 62 V125 C255 185 215 218 170 238 C125 218 85 185 85 125 V62 Z" fill="#fff"/><path d="M170 85 v90 M125 130 h90" stroke="#0f9d76" stroke-width="22" stroke-linecap="round"/><g transform="rotate(-35 320 110)"><rect x="262" y="96" width="92" height="28" rx="9" fill="#fff"/><rect x="288" y="101" width="42" height="18" rx="4" fill="#7dd3fc"/><rect x="354" y="107" width="34" height="6" fill="#fff"/><rect x="240" y="103" width="24" height="14" rx="3" fill="#fff"/></g><circle cx="330" cy="235" r="22" fill="#fff" opacity=".9"/><path d="M320 235 l8 8 l14 -16" stroke="#0f9d76" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <ul><li><i class="bi bi-calendar-check"></i>Automatic vaccine schedules</li><li><i class="bi bi-bell"></i>Instant notifications for parents</li><li><i class="bi bi-graph-up"></i>Live coverage monitoring</li></ul>
+  </div></div>
+  <div class="auth-form"><div class="auth-card fade-up">
+    <h3 class="fw-bold mb-1">Create an account</h3><p class="text-muted mb-3">It only takes a minute</p>
+    <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
+    <form th:action="@{/register}" method="post" class="row g-3">
+      <div class="col-12 input-icon"><i class="bi bi-person-badge"></i><select name="role" class="form-select" onchange="document.getElementById('sc').style.display=this.value=='PARENT'?'none':'block'">
+        <option value="PARENT">Parent / Guardian</option><option value="MIDWIFE">Midwife</option><option value="BHW">Barangay Health Worker</option></select></div>
+      <div class="col-12 input-icon" id="sc" style="display:none"><i class="bi bi-key"></i><input name="staffCode" class="form-control" placeholder="Staff registration code"></div>
+      <div class="col-12 input-icon"><i class="bi bi-person"></i><input name="fullName" class="form-control" placeholder="Full name" required></div>
+      <div class="col-md-6 input-icon"><i class="bi bi-telephone"></i><input name="contact" class="form-control" placeholder="Contact (optional)"></div>
+      <div class="col-md-6 input-icon"><i class="bi bi-envelope"></i><input name="email" type="email" class="form-control" placeholder="Email (optional)"></div>
+      <div class="col-12 input-icon"><i class="bi bi-at"></i><input name="username" class="form-control" placeholder="Username" required></div>
+      <div class="col-md-6 input-icon"><i class="bi bi-lock"></i><input name="password" type="password" minlength="8" class="form-control" placeholder="Password (8+, letters &amp; numbers)" required></div>
+      <div class="col-md-6 input-icon"><i class="bi bi-lock-fill"></i><input name="confirm" type="password" class="form-control" placeholder="Confirm" required></div>
+      <div class="col-12"><button class="btn btn-success btn-auth w-100">Sign up</button></div></form>
+    <div class="text-center mt-3 text-muted">Already registered? <a class="fw-semibold text-success text-decoration-none" th:href="@{/login}">Log in</a></div>
+  </div></div>
+</div>
+</body></html>

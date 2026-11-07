@@ -1,0 +1,53 @@
+:root{--brand:#0f9d76;--brand-d:#0b7a5b;--ink:#1f2a37;--muted:#6b7280;--bg:#f4f7fb;--radius:16px}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink)}
+h4,h5{font-weight:700}
+.navbar-app{background:#fff;box-shadow:0 1px 0 #e5e7eb;position:sticky;top:0;z-index:100}
+.navbar-app .navbar-brand{color:var(--brand-d);font-weight:700;display:flex;gap:.6rem;align-items:center}
+.brand-badge{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--brand),#38bdf8);color:#fff;display:grid;place-items:center;font-size:1.1rem}
+.navbar-app .nav-link{color:#4b5563;border-radius:999px;padding:.45rem .95rem;font-weight:500;transition:.2s}
+.navbar-app .nav-link i{margin-right:.25rem}
+.navbar-app .nav-link:hover{background:#eef6f3;color:var(--brand-d)}
+.navbar-app .nav-link.active{background:var(--brand);color:#fff}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:.8rem;font-weight:600}
+.card{border:0;border-radius:var(--radius);box-shadow:0 2px 14px rgba(16,24,40,.06)}
+.card-header{background:#fff;border:0;font-weight:600;padding:1rem 1.25rem}
+.table>:not(caption)>*>*{padding:.85rem 1rem}
+.table thead th{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:#f9fafb;border:0;white-space:nowrap}
+.table-tools{border-bottom:1px solid #f0f2f5}
+.btn{border-radius:10px;font-weight:500}
+.btn-success{background:var(--brand);border-color:var(--brand)}.btn-success:hover{background:var(--brand-d);border-color:var(--brand-d)}
+.btn-outline-success{color:var(--brand-d);border-color:var(--brand)}.btn-outline-success:hover{background:var(--brand);border-color:var(--brand)}
+.form-control,.form-select{border-radius:10px}
+.stat{display:flex;gap:.9rem;align-items:center;padding:1.1rem}
+.stat .ico{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:1.3rem;flex:none}
+.stat .val{font-size:1.55rem;font-weight:700;line-height:1.1}.stat .lbl{color:var(--muted);font-size:.85rem}
+.stat .dt{color:#9ca3af;font-size:.72rem;margin-top:2px}
+.modal-content{border:0;border-radius:var(--radius)}
+/* auth pages */
+.auth-wrap{min-height:100vh;display:grid;grid-template-columns:1.1fr 1fr;background:#fff}
+.auth-art{position:relative;overflow:hidden;background:linear-gradient(160deg,#0b7a5b,#0f9d76 55%,#38bdf8);color:#fff;display:flex;flex-direction:column;justify-content:center;padding:3rem 4rem}
+.auth-art h1{font-weight:800;letter-spacing:-.5px}
+.auth-art ul{list-style:none;padding:0;margin:1.5rem 0 0}.auth-art li{margin:.5rem 0;opacity:.95}.auth-art li i{margin-right:.5rem}
+.bubble{position:absolute;border-radius:50%;background:rgba(255,255,255,.12);animation:float 8s ease-in-out infinite}
+.art-svg{max-width:380px;width:100%;margin:1rem 0}
+.float{animation:float 6s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-14px)}}
+.fade-up{animation:fadeUp .7s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}}
+.auth-form{display:flex;align-items:center;justify-content:center;padding:2rem;background:var(--bg)}
+.auth-card{width:100%;max-width:440px;background:#fff;border-radius:22px;padding:2rem;box-shadow:0 10px 40px rgba(16,24,40,.1)}
+.input-icon{position:relative}
+.input-icon>i{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:#9ca3af}
+.input-icon .form-control,.input-icon .form-select{padding-left:44px;height:48px;border-radius:12px}
+.input-icon .eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:none;color:#9ca3af}
+.btn-auth{height:48px;border-radius:12px;font-weight:600;transition:.2s}.btn-auth:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,157,118,.35)}
+@media(max-width:900px){.auth-wrap{grid-template-columns:1fr}.auth-art{display:none}.auth-form{min-height:100vh}}
+.ts-dropdown{z-index:2000}.table-tools .ts-wrapper{min-width:210px;max-width:240px}.ts-control{border-radius:10px;min-height:38px}
+@media print{.no-print,.table-tools{display:none!important}body{background:#fff}.card{box-shadow:none}}
+
+/* trust & accessibility */
+body{font-size:15px}
+.btn{min-height:38px}.btn-sm{min-height:32px}
+:focus-visible{outline:3px solid #93c5fd;outline-offset:2px}
+.due-card{border-left:5px solid #16a34a}.due-danger{border-left-color:#dc2626}.due-warning{border-left-color:#f59e0b}
+footer .bi{color:var(--brand)}

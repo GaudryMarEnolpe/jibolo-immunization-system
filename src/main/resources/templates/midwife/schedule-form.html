@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head('Schedule a visit')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<div th:replace="~{fragments :: alerts}"></div>
+<main class="container py-3">
+<div class="card mx-auto" style="max-width:560px"><div class="card-body"><h5>Schedule a visit</h5>
+<form th:action="@{/midwife/schedules}" method="post" class="row g-3">
+  <div class="col-12"><label class="form-label">Child</label><select name="childId" class="form-select searchable" placeholder="Type to search a child..." required><option th:each="c : ${children}" th:value="${c.id}" th:text="${c.fullName} + ' (mother: ' + ${c.motherName} + ')'"></option></select></div>
+  <div class="col-8"><label class="form-label">Vaccine</label><select name="vaccineId" class="form-select searchable"><option th:each="v : ${vaccines}" th:value="${v.id}" th:text="${v.name}"></option></select></div>
+  <div class="col-4"><label class="form-label">Dose no.</label><input type="number" name="dose" min="1" value="1" class="form-control"></div>
+  <div class="col-12"><label class="form-label">Date</label><input type="date" name="date" class="form-control" required></div>
+  <div class="col-12"><button class="btn btn-success">Save and notify parent</button> <a class="btn btn-light" th:href="@{/midwife/schedules}">Cancel</a></div></form></div></div>
+</main>
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body></html>

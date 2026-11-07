@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head('Immunization card')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<div th:replace="~{fragments :: alerts}"></div>
+<main class="container py-3">
+<div class="card"><div class="card-body">
+  <div class="text-center mb-3"><div class="small">Republic of the Philippines | Municipality of Janiuay | Barangay Jibolo</div><h5 class="fw-bold mb-0">EARLY CHILDHOOD CARE AND DEVELOPMENT / IMMUNIZATION CARD</h5></div>
+  <div class="row small mb-3"><div class="col-6">Name: <b th:text="${child.fullName}"></b><br>Sex: <span th:text="${child.sex}"></span> | Birth date: <span th:text="${child.birthText}"></span><br>Birth weight: <span th:text="${child.birthWeight} ?: '-'"></span> kg | Place of delivery: <span th:text="${child.placeOfDelivery} ?: '-'"></span></div>
+    <div class="col-6">Mother: <span th:text="${child.motherName}"></span><br>Father: <span th:text="${child.fatherName} ?: '-'"></span><br>Address: Purok <span th:text="${child.purok} ?: '-'"></span>, Jibolo, Janiuay</div></div>
+  <table class="table table-bordered table-sm"><thead><tr><th>Vaccine / Dose</th><th>Scheduled</th><th>Date given</th><th>Given by</th><th>T / Wt / Ht</th></tr></thead>
+    <tbody><tr th:each="s : ${child.schedules}"><td th:text="${s.label}"></td><td th:text="${s.dateText}"></td>
+      <td th:text="${s.status.name()=='VACCINATED'} ? ${s.givenText} : ''"></td><td th:text="${s.administeredBy}"></td>
+      <td th:text="${s.status.name()=='VACCINATED'} ? ((${s.temperature} ?: '-') + ' / ' + (${s.weight} ?: '-') + ' / ' + (${s.height} ?: '-')) : ''"></td></tr></tbody></table>
+  <p class="small text-muted mb-0">Always bring this card to the health center.</p>
+  <div class="no-print mt-3"><button class="btn btn-success" onclick="window.print()">Print</button> <a class="btn btn-light" th:href="@{/child/{id}(id=${child.id})}">Back</a></div>
+</div></div>
+</main>
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body></html>

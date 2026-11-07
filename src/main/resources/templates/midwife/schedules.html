@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head('Schedules')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<div th:replace="~{fragments :: alerts}"></div>
+<main class="container py-3">
+<div class="d-flex justify-content-between align-items-center mb-3"><h4 class="mb-0">Vaccination schedules</h4><a class="btn btn-success" th:href="@{/midwife/schedules/new}">+ Schedule a visit</a></div>
+<form class="row g-2 mb-3" method="get">
+  <div class="col-md-3"><input type="date" name="date" th:value="${date}" class="form-control"></div>
+  <div class="col-md-3"><select name="status" class="form-select">
+    <option value="" th:selected="${status == null or status == ''}">Not yet vaccinated</option><option value="OVERDUE" th:selected="${status=='OVERDUE'}">Overdue</option>
+    <option value="ABSENT" th:selected="${status=='ABSENT'}">Absent</option><option value="RESCHEDULE_REQUESTED" th:selected="${status=='RESCHEDULE_REQUESTED'}">Reschedule requested</option>
+    <option value="VACCINATED" th:selected="${status=='VACCINATED'}">Vaccinated</option><option value="ALL" th:selected="${status=='ALL'}">All</option></select></div>
+  <div class="col-md-2"><button class="btn btn-outline-success w-100">Filter</button></div></form>
+<div class="card"><div class="table-responsive"><table class="table align-middle mb-0 data-table" data-filter-col="4" data-filter-label="All vaccine statuses">
+  <thead><tr><th>Date</th><th>Child</th><th>Mother</th><th>Vaccine</th><th>Status</th><th></th></tr></thead>
+  <tbody><tr th:each="s : ${list}"><td th:text="${s.dateText}"></td><td><a th:href="@{/child/{id}(id=${s.child.id})}" th:text="${s.child.fullName}"></a></td><td th:text="${s.child.motherName}"></td><td th:text="${s.label}"></td>
+    <td><span th:replace="~{fragments :: badge(${s})}"></span></td><td class="text-end"><div th:replace="~{fragments :: actions(${s})}"></div></td></tr>
+  <tr th:if="${list.isEmpty()}"><td colspan="6" class="text-center text-muted py-4">No schedules match.</td></tr></tbody></table></div></div>
+</main>
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body></html>

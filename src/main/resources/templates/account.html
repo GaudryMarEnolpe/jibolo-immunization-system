@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head('Account')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<div th:replace="~{fragments :: alerts}"></div>
+<main class="container py-3">
+<div class="row g-3">
+  <div class="col-md-6"><div class="card"><div class="card-body"><h5>Profile</h5><div class="text-muted small mb-2" th:text="${me.roleLabel} + ' | username: ' + ${me.username}"></div>
+    <form th:action="@{/account/profile}" method="post">
+      <label class="form-label">Full name</label><input name="fullName" class="form-control mb-2" th:value="${me.fullName}" required>
+      <label class="form-label">Contact no.</label><input name="contact" class="form-control mb-2" th:value="${me.contact}">
+      <label class="form-label">Email</label><input name="email" type="email" class="form-control mb-3" th:value="${me.email}">
+      <button class="btn btn-success">Save profile</button></form></div></div></div>
+  <div class="col-md-6"><div class="card"><div class="card-body"><h5>Change password</h5>
+    <form th:action="@{/account/password}" method="post">
+      <label class="form-label">Current password</label><input name="current" type="password" class="form-control mb-2" required>
+      <label class="form-label">New password</label><input name="password" type="password" minlength="8" class="form-control mb-2" required>
+      <label class="form-label">Confirm new password</label><input name="confirm" type="password" class="form-control mb-3" required>
+      <button class="btn btn-success">Change password</button></form></div></div>
+    <form class="mt-3" th:action="@{/logout}" method="post"><button class="btn btn-outline-secondary w-100">Switch account (log out, then log in with another account)</button></form>
+    <div class="small text-muted mt-2" th:if="${me.role.name() != 'BHW'}">Need another account? Log out and use Sign up on the login page.</div></div>
+</div>
+</main>
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body></html>

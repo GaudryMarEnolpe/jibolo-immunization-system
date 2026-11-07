@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head('My Children')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<div th:replace="~{fragments :: alerts}"></div>
+<main class="container py-4">
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+  <div><h4 class="mb-0">My Children</h4><div class="text-muted small">Hello, <span th:text="${me.fullName}"></span></div></div>
+  <div class="d-flex gap-2"><a class="btn btn-outline-success" th:href="@{/parent/children/new}"><i class="bi bi-plus-circle me-1"></i>Register child</a>
+    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#reqVax" th:disabled="${children.isEmpty()}"><i class="bi bi-syringe me-1"></i>Request Vaccine</button></div></div>
+<div class="row g-3 mb-4">
+  <th:block th:each="c : ${children}"><div class="col-md-6 col-lg-4" th:if="${c.next != null}"><div class="card due-card h-100" th:classappend="'due-' + ${c.next.dueLevel}"><div class="card-body">
+    <div class="small text-muted" th:text="${c.fullName}"></div><div class="fw-semibold" th:text="${c.next.label}"></div>
+    <div class="d-flex justify-content-between align-items-center mt-1"><span class="small" th:text="${c.next.dateText}"></span>
+      <span class="badge" th:classappend="'bg-' + ${c.next.dueLevel} + '-subtle text-' + ${c.next.dueLevel} + '-emphasis'" th:text="${c.next.dueText}"></span></div></div></div></div></th:block>
+</div>
+<div th:replace="~{fragments :: childTable(${children})}"></div>
+<div class="modal fade" id="reqVax" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><form class="modal-content" th:action="@{/parent/vaccine-request}" method="post">
+  <div class="modal-header border-0"><h5 class="modal-title"><i class="bi bi-syringe me-2 text-success"></i>Request a vaccine</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body row g-3">
+    <div class="col-12"><label class="form-label">Child</label><select name="childId" class="form-select searchable" required><option th:each="c : ${children}" th:value="${c.id}" th:text="${c.fullName}"></option></select></div>
+    <div class="col-12"><label class="form-label">Vaccine type</label><select name="vaccineId" class="form-select searchable" required><option th:each="v : ${vaccines}" th:value="${v.id}" th:text="${v.name}"></option></select></div>
+    <div class="col-12"><label class="form-label">Preferred date</label><input type="date" name="preferred" class="form-control" required></div>
+    <div class="col-12"><label class="form-label">Note (optional)</label><input name="note" class="form-control" placeholder="Anything the midwife should know"></div></div>
+  <div class="modal-footer border-0"><button class="btn btn-success w-100">Send request</button></div></form></div></div>
+</main>
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body></html>

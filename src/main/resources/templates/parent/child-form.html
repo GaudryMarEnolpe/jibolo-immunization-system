@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head('Child')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<div th:replace="~{fragments :: alerts}"></div>
+<main class="container py-3">
+<div class="card mx-auto" style="max-width:760px"><div class="card-body">
+<h5 th:text="${edit} ? 'Update child information' : 'Register a child'"></h5>
+<form th:action="@{${action}}" method="post" th:object="${child}" class="row g-3">
+  <div class="col-12"><label class="form-label">Child's full name</label><input th:field="*{fullName}" class="form-control" required></div>
+  <div class="col-md-6"><label class="form-label">Date of birth</label><input type="date" th:field="*{birthDate}" class="form-control" th:readonly="${edit}" required>
+    <div class="form-text" th:if="${edit}">Birth date cannot be changed (it sets the schedule). Ask the midwife if it is wrong.</div></div>
+  <div class="col-md-6"><label class="form-label">Sex</label><select th:field="*{sex}" class="form-select"><option value="Male">Male</option><option value="Female">Female</option></select></div>
+  <div class="col-md-6"><label class="form-label">Mother's name</label><input th:field="*{motherName}" class="form-control" required></div>
+  <div class="col-md-6"><label class="form-label">Father's name</label><input th:field="*{fatherName}" class="form-control"></div>
+  <div class="col-md-4"><label class="form-label">Purok</label><input th:field="*{purok}" class="form-control"></div>
+  <div class="col-md-4"><label class="form-label">Birth weight (kg)</label><input type="number" step="0.01" th:field="*{birthWeight}" class="form-control"></div>
+  <div class="col-md-4"><label class="form-label">Place of delivery</label><input th:field="*{placeOfDelivery}" class="form-control"></div>
+      <div class="col-12" th:unless="${edit}"><div class="border rounded p-3 bg-light small">
+    <div class="form-check"><input class="form-check-input" type="checkbox" name="consent" value="true" id="cs">
+    <label class="form-check-label" for="cs"><b>Consent for Immunization.</b> I am the parent/guardian of this child. I understand and agree to the immunization of my child, I understand the possible adverse effects/complications of the vaccine, and I agree that health workers are not liable for them.</label></div></div></div>
+  <div class="col-12"><button class="btn btn-success">Save</button> <a class="btn btn-light" th:href="@{/parent/dashboard}">Cancel</a></div>
+</form></div></div>
+</main>
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body></html>

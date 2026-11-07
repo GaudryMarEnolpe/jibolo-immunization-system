@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head('Requests')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<div th:replace="~{fragments :: alerts}"></div>
+<main class="container py-4">
+<h4 class="mb-3">Requests</h4>
+<div class="card mb-3" th:each="r : ${pending}"><div class="card-body">
+  <div class="d-flex justify-content-between flex-wrap gap-2"><div>
+    <span class="badge" th:classappend="${r.schedule == null} ? 'bg-primary' : 'bg-info text-dark'" th:text="${r.typeText}"></span>
+    <div class="fw-semibold mt-1"><span th:text="${r.child.fullName}"></span> - <span th:text="${r.vaccine.name}"></span></div>
+    <span class="small text-muted" th:text="'From ' + ${r.parent.fullName} + ' | ' + ${r.timeText}"></span></div>
+    <div class="text-end"><th:block th:if="${r.schedule != null}">Now: <b th:text="${r.schedule.dateText}"></b><br></th:block>Wants: <b th:text="${r.preferredText}"></b></div></div>
+  <p class="my-2" th:text="'Note: ' + ${r.reason}"></p>
+  <div class="d-flex flex-wrap gap-2">
+    <form class="d-flex gap-2" th:action="@{/midwife/requests/{id}/approve(id=${r.id})}" method="post"><input type="date" name="date" class="form-control" th:value="${r.preferredDate}"><button class="btn btn-success text-nowrap">Approve</button></form>
+    <form class="d-flex gap-2" th:action="@{/midwife/requests/{id}/reject(id=${r.id})}" method="post"><input name="response" class="form-control" placeholder="Reason (optional)"><button class="btn btn-outline-danger">Decline</button></form></div>
+</div></div>
+<div class="text-muted text-center py-5" th:if="${pending.isEmpty()}">No pending requests.</div>
+</main>
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body></html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head('Notifications')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<div th:replace="~{fragments :: alerts}"></div>
+<main class="container py-3">
+<div class="d-flex justify-content-between align-items-center mb-3"><h4 class="mb-0">Notifications</h4>
+  <form th:action="@{/notifications/read}" method="post"><button class="btn btn-sm btn-outline-secondary">Mark all as read</button></form></div>
+<div class="list-group">
+  <div class="list-group-item" th:each="n : ${notes}" th:classappend="${n.seen} ? '' : 'border-success border-start border-4'">
+    <div class="d-flex justify-content-between"><b th:text="${n.title}"></b><small class="text-muted" th:text="${n.timeText}"></small></div>
+    <div th:text="${n.message}"></div></div>
+  <div class="list-group-item text-muted text-center" th:if="${notes.isEmpty()}">No notifications yet.</div>
+</div>
+</main>
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body></html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head('Request reschedule')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<div th:replace="~{fragments :: alerts}"></div>
+<main class="container py-3">
+<div class="card mx-auto" style="max-width:560px"><div class="card-body">
+  <h5>Request a new schedule</h5>
+  <p class="mb-3"><b th:text="${s.child.fullName}"></b><br><span th:text="${s.label}"></span> - currently <b th:text="${s.dateText}"></b></p>
+  <form th:action="@{/parent/reschedule/{id}(id=${s.id})}" method="post">
+    <label class="form-label">Preferred new date</label><input type="date" name="preferred" class="form-control mb-3" required>
+    <label class="form-label">Reason</label><textarea name="reason" class="form-control mb-3" rows="3" required placeholder="e.g. I will be out of town"></textarea>
+    <button class="btn btn-primary">Send request</button> <a class="btn btn-light" th:href="@{/parent/dashboard}">Cancel</a></form>
+</div></div>
+</main>
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body></html>

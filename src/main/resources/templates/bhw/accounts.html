@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head('Accounts')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<div th:replace="~{fragments :: alerts}"></div>
+<main class="container py-3">
+<div class="card mb-4"><div class="card-body"><h5>Add another account</h5>
+<form th:action="@{/bhw/accounts}" method="post" class="row g-2">
+  <div class="col-md-4"><input name="fullName" class="form-control" placeholder="Full name" required></div>
+  <div class="col-md-3"><input name="username" class="form-control" placeholder="Username" required></div>
+  <div class="col-md-3"><input name="password" type="password" minlength="8" class="form-control" placeholder="Password" required></div>
+  <div class="col-md-2"><select name="role" class="form-select"><option value="MIDWIFE">Midwife</option><option value="BHW">BHW</option><option value="PARENT">Parent</option></select></div>
+  <div class="col-md-4"><input name="contact" class="form-control" placeholder="Contact (optional)"></div>
+  <div class="col-md-4"><input name="email" type="email" class="form-control" placeholder="Email (optional)"></div>
+  <div class="col-md-4"><button class="btn btn-success w-100">Add account</button></div></form></div></div>
+<div class="card"><div class="table-responsive"><table class="table align-middle mb-0 data-table" data-filter-col="2" data-filter-label="All roles"><thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Status</th><th></th></tr></thead>
+  <tbody><tr th:each="u : ${accounts}"><td th:text="${u.fullName}"></td><td th:text="${u.username}"></td><td th:text="${u.roleLabel}"></td>
+    <td><span class="badge" th:classappend="${u.active} ? 'bg-success' : 'bg-secondary'" th:text="${u.active} ? 'Active' : 'Inactive'"></span></td>
+    <td class="text-end text-nowrap"><form class="d-inline" th:action="@{/bhw/accounts/{id}/toggle(id=${u.id})}" method="post"><button class="btn btn-sm btn-outline-secondary" th:text="${u.active} ? 'Deactivate' : 'Activate'"></button></form>
+      <form class="d-inline" th:action="@{/bhw/accounts/{id}/delete(id=${u.id})}" method="post" onsubmit="return confirm('Delete this account?')"><button class="btn btn-sm btn-outline-danger">Delete</button></form></td></tr></tbody></table></div></div>
+</main>
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body></html>

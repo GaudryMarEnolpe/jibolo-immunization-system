@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head('Monitoring')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<div th:replace="~{fragments :: alerts}"></div>
+<main class="container py-4">
+<div class="d-flex flex-wrap justify-content-between align-items-end mb-3 gap-2"><div><h4 class="mb-0">Monitoring &amp; Reports</h4><div class="text-muted small" th:text="${asOf}"></div></div>
+  <form class="d-flex gap-2 align-items-end no-print" method="get"><div><label class="small">From</label><input type="date" name="from" th:value="${from}" class="form-control"></div><div><label class="small">To</label><input type="date" name="to" th:value="${to}" class="form-control"></div>
+    <button class="btn btn-success">Apply</button><a class="btn btn-outline-secondary" th:href="@{/bhw/report.csv(from=${from},to=${to})}">CSV</a><button type="button" class="btn btn-outline-secondary" onclick="window.print()">Print</button></form></div>
+<div class="row g-3 mb-4">
+  <div class="col-6 col-xl-2"><div th:replace="~{fragments :: stat('bi-people','bg-primary-subtle text-primary',${totalChildren},'Children',${asOf})}"></div></div>
+  <div class="col-6 col-xl-2"><div th:replace="~{fragments :: stat('bi-shield-check','bg-success-subtle text-success',${fully},'Fully Immunized',${asOf})}"></div></div>
+  <div class="col-6 col-xl-2"><div th:replace="~{fragments :: stat('bi-syringe','bg-info-subtle text-info',${vaccinated + ' / ' + doses},'Doses Given',${asOf})}"></div></div>
+  <div class="col-6 col-xl-2"><div th:replace="~{fragments :: stat('bi-hourglass-split','bg-warning-subtle text-warning',${overdue},'Overdue',${asOf})}"></div></div>
+  <div class="col-6 col-xl-2"><div th:replace="~{fragments :: stat('bi-person-x','bg-danger-subtle text-danger',${absent},'Absent',${asOf})}"></div></div>
+  <div class="col-6 col-xl-2"><div th:replace="~{fragments :: stat('bi-pie-chart','bg-secondary-subtle text-secondary',${(doses == 0 ? 0 : vaccinated * 100 / doses) + '%'},'Coverage',${asOf})}"></div></div>
+</div>
+<div class="row g-3">
+  <div class="col-lg-7"><div class="card"><div class="card-header">Per vaccine</div><div class="table-responsive"><table class="table mb-0 align-middle data-table"><thead><tr><th>Vaccine</th><th>Given / Total</th><th>Overdue</th><th style="width:35%">Coverage</th></tr></thead>
+    <tbody><tr th:each="r : ${perVaccine}"><td th:text="${r.name}"></td><td th:text="${r.done} + ' / ' + ${r.total}"></td><td th:text="${r.overdue}"></td>
+      <td><div class="progress"><div class="progress-bar bg-success" th:style="'width:' + ${r.pct()} + '%'" th:text="${r.pct()} + '%'"></div></div></td></tr></tbody></table></div></div></div>
+  <div class="col-lg-5"><div class="card"><div class="card-header">Per purok</div><div class="table-responsive"><table class="table mb-0 data-table"><thead><tr><th>Purok</th><th>Children</th><th>Fully imm.</th><th>With overdue</th></tr></thead>
+    <tbody><tr th:each="r : ${perPurok}"><td th:text="${r.name}"></td><td th:text="${r.total}"></td><td th:text="${r.done}"></td><td th:text="${r.overdue}"></td></tr></tbody></table></div></div></div>
+</div>
+<div class="text-muted small mt-3">Need the list of overdue children? Open <a th:href="@{/bhw/children}">Children</a> and choose "Overdue" in the status filter.</div>
+</main>
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body></html>

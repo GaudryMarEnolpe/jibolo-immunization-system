@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head('Emergency')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<div th:replace="~{fragments :: alerts}"></div>
+<main class="container py-3">
+<div class="card border-danger mb-4"><div class="card-body"><h5 class="text-danger">Emergency / disaster: mass reschedule</h5>
+  <p class="text-muted small">Every pending schedule within the affected dates is moved to the new date and each parent/guardian is notified automatically.</p>
+  <form th:action="@{/bhw/emergency}" method="post" class="row g-3">
+    <div class="col-md-6"><label class="form-label">Reason</label><input name="reason" class="form-control" placeholder="e.g. Typhoon, flooding, health center closed" required></div>
+    <div class="col-md-3"><label class="form-label">Affected from</label><input type="date" name="from" class="form-control" required></div>
+    <div class="col-md-3"><label class="form-label">Affected to (optional)</label><input type="date" name="to" class="form-control"></div>
+    <div class="col-md-3"><label class="form-label">New date</label><input type="date" name="newDate" class="form-control" required></div>
+    <div class="col-md-9"><label class="form-label">Message to parents (optional)</label><input name="message" class="form-control" placeholder="Please stay safe. Vaccination is moved."></div>
+    <div class="col-12"><button class="btn btn-danger" onclick="return confirm('Move all pending schedules in this range and notify parents?')">Move schedules &amp; notify</button></div></form></div></div>
+<h5>History</h5>
+<div class="card"><div class="table-responsive"><table class="table mb-0 data-table" data-filter-col="1" data-filter-label="All reasons"><thead><tr><th>When</th><th>Reason</th><th>Affected dates</th><th>New date</th><th>Moved</th><th>By</th></tr></thead>
+  <tbody><tr th:each="e : ${events}"><td th:text="${e.timeText}"></td><td th:text="${e.reason}"></td><td th:text="${e.rangeText}"></td><td th:text="${e.newText}"></td><td th:text="${e.affected}"></td><td th:text="${e.createdBy}"></td></tr>
+  <tr th:if="${events.isEmpty()}"><td colspan="6" class="text-center text-muted py-3">No emergency reschedules yet.</td></tr></tbody></table></div></div>
+</main>
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body></html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(title)">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${title} + ' | Jibolo Immunization'">Page</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+  <link th:href="@{/css/app.css}" rel="stylesheet">
+</head>
+<body>
+<nav th:fragment="nav" class="navbar navbar-expand-lg navbar-app no-print">
+  <div class="container">
+    <a class="navbar-brand" th:href="@{/}"><span class="brand-badge"><i class="bi bi-shield-plus"></i></span>Jibolo Immunization</a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#nv"><i class="bi bi-list fs-2"></i></button>
+    <div class="collapse navbar-collapse" id="nv">
+      <ul class="navbar-nav me-auto gap-lg-1 mt-2 mt-lg-0">
+        <th:block sec:authorize="hasRole('PARENT')">
+          <li class="nav-item"><a class="nav-link" th:href="@{/parent/dashboard}"><i class="bi bi-people"></i>My Children</a></li>
+          <li class="nav-item"><a class="nav-link" th:href="@{/parent/children/new}"><i class="bi bi-plus-circle"></i>Register Child</a></li>
+        </th:block>
+        <th:block sec:authorize="hasRole('MIDWIFE')">
+          <li class="nav-item"><a class="nav-link" th:href="@{/midwife/dashboard}"><i class="bi bi-speedometer2"></i>Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" th:href="@{/midwife/schedules}"><i class="bi bi-calendar-check"></i>Schedules</a></li>
+          <li class="nav-item"><a class="nav-link" th:href="@{/midwife/requests}"><i class="bi bi-inbox"></i>Requests</a></li>
+          <li class="nav-item"><a class="nav-link" th:href="@{/midwife/children}"><i class="bi bi-people"></i>Children</a></li>
+        </th:block>
+        <th:block sec:authorize="hasRole('BHW')">
+          <li class="nav-item"><a class="nav-link" th:href="@{/bhw/dashboard}"><i class="bi bi-graph-up"></i>Monitoring</a></li>
+          <li class="nav-item"><a class="nav-link" th:href="@{/bhw/children}"><i class="bi bi-people"></i>Children</a></li>
+          <li class="nav-item"><a class="nav-link" th:href="@{/bhw/emergency}"><i class="bi bi-exclamation-triangle"></i>Emergency</a></li>
+          <li class="nav-item"><a class="nav-link" th:href="@{/bhw/accounts}"><i class="bi bi-person-gear"></i>Accounts</a></li>
+        </th:block>
+      </ul>
+      <ul class="navbar-nav align-items-lg-center gap-lg-1">
+        <li class="nav-item"><a class="nav-link" th:href="@{/notifications}"><i class="bi bi-bell"></i>Notifications <span class="badge rounded-pill bg-danger" th:if="${unread != null and unread > 0}" th:text="${unread}">0</span></a></li>
+        <li class="nav-item dropdown"><a class="nav-link dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown" href="#"><span class="avatar" th:text="${#strings.substring(me.fullName,0,1)}">U</span><span th:text="${me.fullName}">User</span></a>
+          <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+            <li><span class="dropdown-item-text small text-muted" th:text="${me.roleLabel}">Role</span></li>
+            <li><a class="dropdown-item" th:href="@{/account}"><i class="bi bi-gear me-2"></i>Account Settings</a></li>
+            <li><form th:action="@{/logout}" method="post"><button class="dropdown-item"><i class="bi bi-box-arrow-right me-2"></i>Switch Account / Log out</button></form></li>
+          </ul></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<div th:fragment="alerts" class="container mt-3 no-print">
+  <div class="alert alert-success mb-0" th:if="${success}" th:text="${success}"></div>
+  <div class="alert alert-danger mb-0" th:if="${error}" th:text="${error}"></div>
+</div>
+<th:block th:fragment="scripts"><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script><script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script><script th:src="@{/js/app.js}"></script></th:block>
+<span th:fragment="badge(s)" class="badge"
+  th:classappend="${s.status.name()=='VACCINATED' ? 'bg-success' : s.status.name()=='ABSENT' ? 'bg-danger' : s.overdue ? 'bg-warning text-dark' : s.status.name()=='RESCHEDULE_REQUESTED' ? 'bg-info text-dark' : 'bg-primary'}"
+  th:text="${s.overdue and s.status.name()=='SCHEDULED' ? 'OVERDUE' : s.status.name().replace('_',' ')}">STATUS</span>
+
+<!-- Midwife action buttons + modals for one schedule row -->
+<div th:fragment="actions(s)" class="no-print text-nowrap">
+  <th:block th:if="${s.status.name() != 'VACCINATED'}">
+    <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" th:attr="data-bs-target='#v'+${s.id}">Vaccinate</button>
+    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" th:attr="data-bs-target='#a'+${s.id}">Absent</button>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" th:attr="data-bs-target='#r'+${s.id}">Reschedule</button>
+    <div class="modal fade text-start" th:id="'v'+${s.id}" tabindex="-1"><div class="modal-dialog"><form class="modal-content" method="post" th:action="@{/midwife/schedules/{id}/vaccinate(id=${s.id})}">
+      <div class="modal-header"><h6 class="modal-title" th:text="'Record: ' + ${s.label} + ' - ' + ${s.child.fullName}"></h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body row g-2">
+        <div class="col-6"><label class="form-label">Date given</label><input type="date" name="given" class="form-control" th:value="${#temporals.format(#temporals.createToday(),'yyyy-MM-dd')}"></div>
+        <div class="col-6"><label class="form-label">Temperature (&deg;C)</label><input type="number" step="0.1" name="temperature" class="form-control"></div>
+        <div class="col-6"><label class="form-label">Weight (kg)</label><input type="number" step="0.1" name="weight" class="form-control"></div>
+        <div class="col-6"><label class="form-label">Height (cm)</label><input type="number" step="0.1" name="height" class="form-control"></div>
+        <div class="col-12"><label class="form-label">Care given / remarks</label><input name="remarks" class="form-control" placeholder="e.g. 0.5 ml injected, in good condition"></div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-success">Save vaccination</button></div></form></div></div>
+    <div class="modal fade text-start" th:id="'a'+${s.id}" tabindex="-1"><div class="modal-dialog"><form class="modal-content" method="post" th:action="@{/midwife/schedules/{id}/absent(id=${s.id})}">
+      <div class="modal-header"><h6 class="modal-title" th:text="'Child not present: ' + ${s.child.fullName}"></h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body"><label class="form-label">New date (optional)</label><input type="date" name="newDate" class="form-control mb-2"><label class="form-label">Reason / remarks</label><input name="remarks" class="form-control"></div>
+      <div class="modal-footer"><button class="btn btn-danger">Mark absent</button></div></form></div></div>
+    <div class="modal fade text-start" th:id="'r'+${s.id}" tabindex="-1"><div class="modal-dialog"><form class="modal-content" method="post" th:action="@{/midwife/schedules/{id}/reschedule(id=${s.id})}">
+      <div class="modal-header"><h6 class="modal-title" th:text="'Reschedule: ' + ${s.child.fullName}"></h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body"><label class="form-label">New date</label><input type="date" name="date" class="form-control mb-2" required><label class="form-label">Note to parent (optional)</label><input name="why" class="form-control"></div>
+      <div class="modal-footer"><button class="btn btn-primary">Save new date</button></div></form></div></div>
+  </th:block>
+  <span class="text-muted small" th:if="${s.status.name() == 'VACCINATED'}" th:text="'Given by ' + ${s.administeredBy}"></span>
+</div>
+
+<!-- dashboard stat card with date underneath -->
+<div th:fragment="stat(icon,color,value,label,date)" class="card h-100"><div class="stat">
+  <div class="ico" th:classappend="${color}"><i class="bi" th:classappend="${icon}"></i></div>
+  <div><div class="val" th:text="${value}">0</div><div class="lbl" th:text="${label}">Label</div><div class="dt"><i class="bi bi-calendar3"></i> <span th:text="${date}">date</span></div></div></div></div>
+
+<!-- ONE unified children table, used by every role -->
+<div th:fragment="childTable(list)" class="card"><div class="table-responsive"><table class="table align-middle mb-0 data-table" data-filter-col="6" data-filter-label="All statuses">
+  <thead><tr><th>Child</th><th>Age</th><th>Mother / Purok</th><th>Ht / Wt / BMI</th><th>Progress</th><th>Next vaccine</th><th>Status</th><th></th></tr></thead>
+  <tbody>
+    <tr th:each="c : ${list}">
+      <td><a class="fw-semibold text-decoration-none" th:href="@{/child/{id}(id=${c.id})}" th:text="${c.fullName}"></a><div class="small text-muted" th:text="${c.sex}"></div></td>
+      <td th:text="${c.ageText}"></td>
+      <td><div th:text="${c.motherName}"></div><div class="small text-muted" th:text="'Purok ' + (${c.purok} ?: '-')"></div></td>
+      <td class="small text-nowrap" th:text="(${c.height} ?: '-') + ' cm / ' + (${c.weight} ?: '-') + ' kg / ' + (${c.bmi} ?: '-')"></td>
+      <td style="min-width:120px"><div class="progress" style="height:6px"><div class="progress-bar bg-success" th:style="'width:' + ${c.percent} + '%'"></div></div><small class="text-muted" th:text="${c.done} + ' / ' + ${c.schedules.size()}"></small></td>
+      <td class="small"><th:block th:if="${c.next != null}"><div class="fw-semibold" th:text="${c.next.label}"></div><div class="text-muted" th:text="${c.next.dateText}"></div><span class="badge" th:classappend="'bg-' + ${c.next.dueLevel} + '-subtle text-' + ${c.next.dueLevel} + '-emphasis'" th:text="${c.next.dueText}"></span></th:block><span class="text-success" th:if="${c.next == null}"><i class="bi bi-check-circle"></i> All done</span></td>
+      <td><span class="badge rounded-pill" th:classappend="${c.fullyImmunized} ? 'bg-success' : (${c.hasOverdue} ? 'bg-warning text-dark' : 'bg-secondary-subtle text-secondary')" th:text="${c.statusText}"></span></td>
+      <td class="text-end text-nowrap"><a class="btn btn-sm btn-outline-success" th:href="@{/child/{id}(id=${c.id})}">Open</a>
+        <th:block sec:authorize="hasRole('PARENT')"><a class="btn btn-sm btn-outline-primary" th:if="${c.next != null and c.next.status.name() != 'RESCHEDULE_REQUESTED'}" th:href="@{/parent/reschedule/{id}(id=${c.next.id})}">Reschedule</a></th:block></td>
+    </tr>
+    <tr th:if="${list.isEmpty()}"><td colspan="8" class="text-center text-muted py-5">No children registered yet.</td></tr>
+  </tbody></table></div></div>
+<footer th:fragment="footer" class="container py-4 text-center text-muted small no-print"><i class="bi bi-shield-lock me-1"></i>Barangay Jibolo Health Station, Janiuay, Iloilo &middot; Child health records are confidential and shared only with the child's family and authorized health workers.</footer>
+</body></html>
